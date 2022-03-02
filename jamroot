@@ -1,0 +1,14 @@
+path-constant local-root : /sandbox ;
+
+import testing ;
+import xpp.jam ;
+
+lib boost-unit-test
+	:
+	:
+	<name>boost_unit_test_framework <search>$(local-root)/lib
+	:
+	:
+	<link>shared:<define>BOOST_TEST_DYN_LINK=1
+	<include>$(local-root)/include
+	;

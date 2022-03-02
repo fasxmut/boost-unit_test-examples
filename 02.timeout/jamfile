@@ -1,0 +1,8 @@
+local prog = timeout ;
+
+unit-test $(prog)
+	:
+	$(prog).xpp
+	:
+	<library>..//boost-unit-test/<link>static
+	;

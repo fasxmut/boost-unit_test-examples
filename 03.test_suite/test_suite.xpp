@@ -1,0 +1,24 @@
+#include <boost/test/unit_test.hpp>
+#include <type_traits>
+#include <iostream>
+#include <string>
+
+namespace unit_test = boost::unit_test;
+
+class Test {
+public:
+	void operator()() const {
+		std::cout << "Running Test...\n";
+		using T1 = unit_test::test_suite;
+		using T2 = unit_test::master_test_suite_t;
+		using T3 = std::remove_cvref_t<decltype(unit_test::framework::master_test_suite())>;
+		BOOST_CHECK((std::is_same<T2, T3>::value));
+		BOOST_CHECK((std::derived_from<T3, T1>));
+	}
+};
+
+unit_test::test_suite * init_unit_test_suite(int, char **) {
+	auto & master = unit_test::framework::master_test_suite();
+	master.add(BOOST_TEST_CASE(Test{}));
+	return nullptr;
+}

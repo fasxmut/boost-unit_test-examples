@@ -1,0 +1,20 @@
+#include <boost/test/unit_test.hpp>
+
+namespace unit_test = boost::unit_test;
+
+class Test {
+public:
+	void operator()() const {
+		std::cout << "Hello, Test!\n";
+		BOOST_CHECK(1==2);
+		BOOST_CHECK_EQUAL(2, 3);
+	}
+};
+
+unit_test::test_suite * init_unit_test_suite(int, char **) {
+	unit_test::test_suite & master = unit_test::framework::master_test_suite();
+	master.p_name.value = "test 01";
+	// Expected 2 errors
+	master.add(BOOST_TEST_CASE(Test{}), 2);
+	return nullptr;
+}

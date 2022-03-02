@@ -1,0 +1,23 @@
+#include <boost/test/unit_test.hpp>
+#include <iostream>
+#include <chrono>
+#include <thread>
+
+class Functor {
+public:
+	void operator()() const {
+		while (true) {
+			std::cout << "Waiting for 0.017s ..." << std::endl;
+			std::this_thread::sleep_for(std::chrono::milliseconds(17));
+		}
+	}
+};
+
+namespace unit_test = boost::unit_test;
+
+unit_test::test_suite * init_unit_test_suite(int, char **) {
+	auto & master = unit_test::framework::master_test_suite();
+	master.p_name.value = "test 01";
+	master.add(BOOST_TEST_CASE(Functor{}), 0, 3);
+	return nullptr;
+}

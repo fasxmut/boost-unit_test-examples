@@ -1,0 +1,27 @@
+#include <iostream>
+#include <vector>
+#include <assert.h>
+#include "polymorphism.ipp"
+
+int main() try {
+	std::vector<Bird *> birds {
+		new BlackBird{"James"},
+		new BlackSwan{"Bob"},
+		new Swan{"Johns"},
+		new BlackSwan{"Bills"}
+	};
+	assert(Bird::counter == birds.size());
+
+	for (auto * bird: birds)
+		bird->actions();
+
+	for (auto * bird: birds)
+		delete bird;
+	birds.clear();
+
+	assert(Bird::counter == 0);
+	assert(birds.size() == 0);
+} catch (std::exception & exc) {
+	std::cerr << "[CPP Exception] " << exc.what() << std::endl;
+	return 1;
+}

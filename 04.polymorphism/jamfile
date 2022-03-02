@@ -1,0 +1,11 @@
+path-constant this-dir : . ;
+
+unit-test polymorphism-app : polymorphism-app.xpp : <include>$(this-dir) ;
+
+unit-test polymorphism-test
+	:
+	polymorphism-test.xpp
+	:
+	<library>..//boost-unit-test/<link>static
+	<include>$(this-dir)
+	;

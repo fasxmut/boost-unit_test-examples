@@ -1,0 +1,8 @@
+local prog = test_suite-hello ;
+
+unit-test $(prog)
+	:
+	$(prog).xpp
+	:
+	<library>..//boost-unit-test/<link>static
+	;

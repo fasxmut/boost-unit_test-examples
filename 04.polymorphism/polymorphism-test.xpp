@@ -1,0 +1,65 @@
+#include <boost/test/unit_test.hpp>
+#include <iostream>
+#include <type_traits>
+#include "polymorphism.ipp"
+#include <vector>
+
+namespace unit_test = boost::unit_test;
+
+class Manager {
+public:
+	void operator()() const {
+		std::cout << "Running Test ...\n";
+		
+		BOOST_CHECK((std::derived_from<BlackSwan, BlackBird>));
+		BOOST_CHECK((std::derived_from<BlackSwan, Swan>));
+		BOOST_CHECK((std::derived_from<BlackSwan, Bird>));
+
+		i32 N = 0;
+
+		BlackBird bb1{"bb1"};
+		Swan sb1{"sb1"};
+		BlackSwan bs1{"bs1"};
+		N += 3;
+		
+		BOOST_CHECK_EQUAL(Bird::counter, N);
+		std::cout << "Bird::counter => " << Bird::counter << '\n'; // 3
+
+		[[maybe_unused]] Bird && bb2 = BlackBird{"bb2"};
+		[[maybe_unused]] Bird && sb2 = Swan{"sb2"};
+		[[maybe_unused]] Bird && bs2 = BlackBird{"bs2"};
+		N += 3;
+
+		BOOST_CHECK(Bird::counter == N);
+		std::cout << "Bird::counter => " << Bird::counter << '\n'; // 6
+
+		std::vector<Bird *> birds {
+			new BlackSwan{"bs3"},
+			new BlackBird{"bb3"},
+			new Swan{"sb3"},
+			new BlackSwan{"bs4"}
+		};
+		BOOST_CHECK(birds.size() > 0);
+		N += birds.size(); // +4
+		
+		BOOST_CHECK(Bird::counter == N);
+		std::cout << "Bird::counter => " << Bird::counter << '\n'; // 10
+
+		for (auto * bird: birds)
+			delete bird;
+		N -= birds.size();
+		birds.clear();
+
+		BOOST_CHECK(Bird::counter == N);
+		BOOST_CHECK(birds.size() == 0);
+		std::cout << "Bird::counter => " << Bird::counter << '\n'; // 6
+		
+		bs1.actions();
+	}
+};
+
+unit_test::test_suite * init_unit_test_suite(int, char **) {
+	auto & master = unit_test::framework::master_test_suite();
+	master.add(BOOST_TEST_CASE(Manager{}), 0);
+	return nullptr;
+}
